@@ -1,0 +1,14 @@
+@import '_variaveis';
+body{
+    margin: 0;
+    padding: 0;
+    footer{
+        color: white;
+        position: fixed;
+        bottom: 0;
+        padding: 5px 0 5px 0;
+        text-align: center;
+        width: 100%;
+        background-color: $backGround;
+    }
+}
