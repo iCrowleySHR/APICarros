@@ -53,6 +53,3 @@ create table veiculo(
     id_transmissao int not null,
     constraint FKid_transmissao foreign key (id_transmissao) references transmissao (id_transmissao)
 );
-
-
-
