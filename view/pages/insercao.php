@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Aqui é a página de inserção de carros!</h1>
-
+    <?php require 'controller/insercao.php';?>
     <?php require 'view/components/footer.php' ?>
 </body>
 </html>
