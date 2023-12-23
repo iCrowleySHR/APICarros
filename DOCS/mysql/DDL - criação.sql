@@ -8,8 +8,22 @@ create table marca(
 
 create table modelo(
 	id_modelo int auto_increment not null primary key,
-    nome_modelo varchar(50) not null
+    nome_modelo varchar(50) not null,
+    
+    id_marca int not null,
+    constraint FKid_marca foreign key (id_marca) references marca (id_marca)
 );
+
+create table combustivel(
+	id_combustivel int auto_increment not null primary key,
+    combustivel char(20) not null
+);
+
+create table transmissao(
+	id_transmissao int auto_increment not null primary key,
+    transmissao char(22)
+);
+
 
 create table veiculo(
 	id_veiculo int auto_increment not null primary key,
@@ -29,15 +43,17 @@ create table veiculo(
     ano_producao char(4) not null,
     porta int not null,
     motor decimal(2.1) not null,
-    carrocerria char(20) not null
+    carrocerria char(20) not null,
+    
+    id_modelo int not null,
+    constraint FKid_modelo foreign key (id_modelo) references modelo (id_modelo),
+    
+    id_combustivel int not null,
+    constraint FKid_combustivel foreign key (id_combustivel) references combustivel (id_combustivel),
+    
+    id_transmissao int not null,
+    constraint FKid_transmissao foreign key (id_transmissao) references transmissao (id_transmissao)
 );
 
-create table combustivel(
-	id_combustivel int auto_increment not null primary key,
-    combustivel char(20) not null
-);
 
-create table transmissao(
-	id_transmissao int auto_increment not null primary key,
-    transmissao char(15)
-);
+
