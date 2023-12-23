@@ -24,7 +24,6 @@ create table transmissao(
     transmissao char(22)
 );
 
-
 create table veiculo(
 	id_veiculo int auto_increment not null primary key,
     piloto_automatico bit not null,
