@@ -14,6 +14,3 @@ values
 ('Manual (Câmbio Manual)'),
 ('Automática'),
 ('Automatizada');
-
-select * from transmissao;
-

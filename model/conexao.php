@@ -11,8 +11,7 @@ class conexao{
             return "ERRO NÃO PASSOU DA CONEXÃO:" . $erro -> getMessage();
         }
     }
-    public function consultaBanco() {
-        return "helloud";
+    public function consultaBanco() {   
     }
 } 
 ?>
