@@ -13,7 +13,14 @@
         <?php require 'controller/insercao.php';?>
         <form method="post">
             <label for="nomeVeiculo">Nome do Veiculo:</label>
-            <input type="text" name="nomeVeiculo" class="form-control" placeholder="">
+            <input type="text" name="nomeVeiculo" class="form-control border border-black" placeholder="">
+
+            <select name="" id="" class="form-control mt-4 border border-black">
+                <option value="1">sdasdas</option>
+                <option value="1">dasdasdas</option>
+                <option value="1">dasdasd</option>
+                <option value="1">asdas</option>
+            </select>
         </form>
     </main>
     <?php require 'view/components/footer.php' ?>
