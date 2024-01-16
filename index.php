@@ -1,26 +1,14 @@
 <?php 
 
-require 'output.php';
+require __DIR__.'/includes/app.php';
 
-use api\output\output;
+use App\Http\Router;
 
-$output = new output();
+// INICIA O ROUTER
+$obRouter = new Router(URL);
 
-$data = [];
-$data['status'] = 'ERROR';
-$url = explode('/', $_GET['url']);
+// INCLUI AS ROTAS DA API
+include __DIR__.'/routes/api.php';
 
-if (isset($url)) {
-    switch ($url[0]) {
-        case 'status':
-            $data = $output -> api_status($data);
-            break;
-        case 'carros':
-            $data = $output -> api_carros($data);
-            break;
-    }
-}
-
-$output -> response($data);
-
-?>
+// IMPRIME O RESPONSE DA ROTA
+$obRouter->run()->sendReponse();
