@@ -4,33 +4,21 @@ namespace App\Service;
 
 use Exception;
 use App\Model\Entity\Transmission as EntityTransmission;
-use App\Model\DatabaseManager\Pagination;
 
 class Transmission extends Api
 {
     /**
      * Método responsável por obter a renderização dos itens da api
      * @param Request $request
-     * @param Pagination $obPagination
      * @return string
      */
-    private static function getTransmissionsItens($request, &$obPagination)
+    private static function getTransmissionsItens($request)
     {
         // ITENS
         $itens = [];
 
-        // QUANTIDADE TOTAL DE REGISTROS
-        $quatidadetotal = EntityTransmission::getTransmissions(null, null, null,'COUNT(*) as qtn')->fetchObject()->qtn;
-
-        // PÁGINA ATUAL
-        $queryParams = $request->getQueryParams();
-        $paginaAtual = $queryParams['page'] ?? 1;
-
-        // INSTANCIA DE PAGINAÇÃO
-        $obPagination = new Pagination($quatidadetotal, $paginaAtual, 10);
-
         // RESULTADOS DA PÁGINA
-        $results = EntityTransmission::getTransmissions(null,'id ASC', $obPagination->getLimit());
+        $results = EntityTransmission::getTransmissions(null,'id ASC');
 
         // RENDERIZA O ITEM
         while($obTransmission = $results->fetchObject(EntityTransmission::class)) {
@@ -51,10 +39,7 @@ class Transmission extends Api
      */
     public static function getTransmissions($request)
     {
-        return [
-            'transmissoes' => self  ::getTransmissionsItens($request, $obPagination),
-            'paginacao'    => parent::getPagination($request, $obPagination)
-        ];
+        return self::getTransmissionsItens($request);
     }
 
     /**
@@ -82,6 +67,45 @@ class Transmission extends Api
         return [
             'id'               => $obTransmission->id,
             'nome_transmissao' => $obTransmission->nome_transmissao
+        ];
+    }
+
+    /**
+     * Método responsável por cadastrar uma nova transmissão
+     * @param Request $request
+     * @return array
+     */
+    public static function setNewTransmission($request)
+    {
+        // POST VARS
+        $postVars = $request->getPostVars();
+        $nome = $postVars['nome_transmissao'] ?? null;
+
+        // VALIDA O NOME
+        if (!isset($nome)) {
+            throw new Exception("O campo 'nome_transmissao' é obrigatório.", 400);
+        } else if (empty($nome)) {
+            throw new Exception("O campo 'nome_transmissao' não pode estar vazio.", 400);
+        }
+
+        // BUSCA TRANSMISSÃO
+        $obTransmission = EntityTransmission::getTransmissionByName($nome);
+
+        // VALIDA SE A TRANSMISSÃO JÁ EXISTE
+        if ($obTransmission instanceof EntityTransmission) {
+            throw new Exception("Transmissão ".$nome." já existente.", 400);
+        }
+
+        // CADASTRA UMA NOVA INSTÂNCIA NO BANCO
+        $obTransmission = new EntityTransmission;
+        $obTransmission->nome_transmissao = $nome;
+        $obTransmission->cadastrar();
+
+        // RETORNA OS DETALHES DA TRANSMISSÃO CADASTRADA
+        return [
+            'id' => $obTransmission->id,
+            'nome_marca' => $obTransmission->nome_transmissao,
+            'success' => true
         ];
     }
 }

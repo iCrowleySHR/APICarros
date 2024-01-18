@@ -4,33 +4,21 @@ namespace App\Service;
 
 use Exception;
 use App\Model\Entity\Fuel as EntityFuel;
-use App\Model\DatabaseManager\Pagination;
 
 class Fuel extends Api
 {
     /**
      * Método responsável por obter a renderização dos itens da api
      * @param Request $request
-     * @param Pagination $obPagination
      * @return string
      */
-    private static function getFuelsItens($request, &$obPagination)
+    private static function getFuelsItens($request)
     {
         // ITENS
         $itens = [];
 
-        // QUANTIDADE TOTAL DE REGISTROS
-        $quatidadetotal = EntityFuel::getFuels(null, null, null,'COUNT(*) as qtn')->fetchObject()->qtn;
-
-        // PÁGINA ATUAL
-        $queryParams = $request->getQueryParams();
-        $paginaAtual = $queryParams['page'] ?? 1;
-
-        // INSTANCIA DE PAGINAÇÃO
-        $obPagination = new Pagination($quatidadetotal, $paginaAtual, 10);
-
         // RESULTADOS DA PÁGINA
-        $results = EntityFuel::getFuels(null,'id ASC', $obPagination->getLimit());
+        $results = EntityFuel::getFuels(null,'id ASC');
 
         // RENDERIZA O ITEM
         while($obFuel = $results->fetchObject(EntityFuel::class)) {
@@ -51,10 +39,7 @@ class Fuel extends Api
      */
     public static function getFuels($request)
     {
-        return [
-            'combustiveis' => self  ::getFuelsItens($request, $obPagination),
-            'paginacao'    => parent::getPagination($request, $obPagination)
-        ];
+        return self::getFuelsItens($request);
     }
 
     /**
@@ -82,6 +67,45 @@ class Fuel extends Api
         return [
             'id'               => $obFuel->id,
             'nome_combustivel' => $obFuel->nome_combustivel
+        ];
+    }
+
+    /**
+     * Método responsável por cadastrar um novo combustivel
+     * @param Request $request
+     * @return array
+     */
+    public static function setNewFuel($request)
+    {
+        // POST VARS
+        $postVars = $request->getPostVars();
+        $nome = $postVars['nome_combustivel'] ?? null;
+
+        // VALIDA O NOME
+        if (!isset($nome)) {
+            throw new Exception("O campo 'nome_combustivel' é obrigatório.", 400);
+        } else if (empty($nome)) {
+            throw new Exception("O campo 'nome_combustivel' não pode estar vazio.", 400);
+        }
+
+        // BUSCA COMBUSTÍVEL
+        $obFuel = EntityFuel::getFuelByName($nome);
+
+        // VALIDA SE O COMBUSTÍVEL JÁ EXISTE
+        if ($obFuel instanceof EntityFuel) {
+            throw new Exception("Combustível ".$nome." já existente.", 400);
+        }
+
+        // CADASTRA UMA NOVA INSTÂNCIA NO BANCO
+        $obFuel = new EntityFuel;
+        $obFuel->nome_combustivel = $nome;
+        $obFuel->cadastrar();
+
+        // RETORNA OS DETALHES DO COMBUSTÍVEL CADASTRADO
+        return [
+            'id' => $obFuel->id,
+            'nome_combustivel' => $obFuel->nome_combustivel,
+            'success' => true
         ];
     }
 }
