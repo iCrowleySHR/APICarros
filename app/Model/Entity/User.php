@@ -34,7 +34,49 @@ class User
      * Tipo de acesso do usuário
      * @var boolean
      */
-    public $acesso_admin;
+    public $acesso_admin = false;
+
+    /**
+     * Método responsável por cadastrar a instância atual no banco de dados
+     * @return boolean
+     */
+    public function cadastrar()
+    {
+        // INSERE O USUÁRIO NO BANCO
+        $this->id = (new Database('usuario'))->insert([
+            'nome'         => $this->nome,
+            'email'        => $this->email,
+            'senha'        => $this->senha,
+            'acesso_admin' => $this->acesso_admin
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Método responsável por atualizar a instância atual no banco de dados
+     * @return boolean
+     */
+    public function atualizar()
+    {
+        // ATUALIZA O USUÁRIO NO BANCO
+        return (new Database('usuario'))->update('id = '.$this->id, [
+            'nome'         => $this->nome,
+            'email'        => $this->email,
+            'senha'        => $this->senha,
+            'acesso_admin' => (bool)$this->acesso_admin
+        ]);
+    }
+
+    /**
+     * Método responsável por excluir a instância atual no banco de dados
+     * @return boolean
+     */
+    public function excluir()
+    {
+        // EXCLUI  O USUÁRIO NO BANCO
+        return (new Database('usuario'))->delete('id = '.$this->id);
+    }
 
     /**
      * Método responsável por buscar os usuários no banco
