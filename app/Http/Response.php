@@ -39,7 +39,8 @@ class Response
         $this->httpCode = $httpCode;
         $this->content  = $content;
         $this->addHeader("Content-type", $this->contentType);
-        $this->addHeader("Access-Control-Allow-Origin", 'http://localhost:5173/');
+        $this->addHeader("Access-Control-Allow-Origin", '*');
+        $this->addHeader("Access-Control-Allow-Headers", '*');
     }
 
     /**
