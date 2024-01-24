@@ -37,7 +37,7 @@ class Router
      * Content type padrão do response
      * @var string
      */
-    private $contentType = 'text/html';
+    private $contentType = 'application/json';
 
     /**
      * Método responsável por iniciar a classe
@@ -103,6 +103,9 @@ class Router
             $route = preg_replace($patternVariable, '(.*?)', $route);
             $params['variables'] = $matches[1];
         }
+
+        // REMOVE BARRA NO FINAL DA ROTA
+        $route = rtrim($route,'/');
 
         // PADRÃO DE VALIDAÇAO DA URL
         $patternRoute = '/^'. str_replace('/', '\/', $route) . '$/';
@@ -263,11 +266,6 @@ class Router
     {
         switch ($this->contentType) {
             case 'application/json':
-                return [
-                    'error' => $message
-                ];
-                break;
-            default:
                 return [
                     'error' => $message
                 ];

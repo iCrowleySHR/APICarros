@@ -38,13 +38,16 @@ $obRouter->put('/api/v1/transmissions/{id}', [
     }
 ]);
 
-// ROTA DE EXCLUSÃO DE TRANSMISSÃO (DELETE)
-$obRouter->delete('/api/v1/transmissions/{id}', [
-    'middlewares' => [
-        'user-basic-auth',
-        'user-admin-auth'
-    ],
-    function($request, $id) {
-        return new Response(200, Service\Transmission::setDeleteTransmission($request, $id));
+// ROTA DE TESTE TRANSMISSÃO (OPTIONS)
+$obRouter->options('/api/v1/transmissions', [
+    function($request) {
+        return new Response(200, Service\Transmission::getDetails($request));
+    }
+]);
+
+// ROTA DE TESTE TRANSMISSÃO ID (OPTIONS)
+$obRouter->options('/api/v1/transmissions/{id}', [
+    function($request) {
+        return new Response(200, Service\Transmission::getDetails($request));
     }
 ]);

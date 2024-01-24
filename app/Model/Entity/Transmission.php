@@ -33,6 +33,18 @@ class Transmission
     }
 
     /**
+     * Método responsável por atualizar a instância atual no banco de dados
+     * @return boolean
+     */
+    public function atualizar()
+    {
+        // ATUALIZA A TRANSMISSÃO NO BANCO
+        return (new Database('transmissao'))->update('id = '.$this->id, [
+            'nome_transmissao' => $this->nome_transmissao
+        ]);
+    }
+
+    /**
      * Método rensponsavel por buscar as transmissões
      * @param string $where
      * @param string $order
